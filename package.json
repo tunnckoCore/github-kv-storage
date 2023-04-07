@@ -1,0 +1,14 @@
+{
+  "name": "github-kv-storage",
+  "version": "1.0.0",
+  "description": "StorageArea implementation for GitHub, using the REST v4 API. Because everything else sucks and I need a basic, centralized, and reliable database",
+  "main": "index.mjs",
+  "type": "module",
+  "repository": "git@github.com:tunnckoCore/github-storage.git",
+  "author": "Charlike Mike Reagent <opensource@tunnckocore.com>",
+  "license": "MIT",
+  "dependencies": {
+    "get-value": "^3.0.1",
+    "set-value": "^4.1.0"
+  }
+}
