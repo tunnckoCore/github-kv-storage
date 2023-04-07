@@ -63,7 +63,7 @@ database in few ways:
 - if not found anywhere, it defaults to `db` which means a file named `db.json` should exist
   in the repository, or pass `options.autoCreate: true`, or call `await storage._create()` to initialize it.
 
-For example, in the `github://tunnckoCore/foobar/mydb.js` the `mydb` is the name.
+For example, in the `github://tunnckoCore/foobar/mydb.json` the `mydb` is the name. You can skip the `.json` extension too.
 
 ### options
 
