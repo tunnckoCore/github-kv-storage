@@ -159,6 +159,8 @@ export default class GithubStorage {
   }
 
   async _create() {
+    const initialContent = btoa("{}");
+
     const resp = await fetch(this.url, {
       method: "PUT",
       headers: {
@@ -166,14 +168,15 @@ export default class GithubStorage {
       },
       body: JSON.stringify({
         message: `chore: create ${this.key} database`,
-        content: btoa("{}"),
+        content: initialContent,
       }),
     });
 
     this.store = await resp.json();
+    this.store.content = initialContent;
     this._updateStore(this.store);
 
-    return { store: this.store, json: this.json };
+    return { store: this.store, json: {} };
   }
 
   async _open() {
@@ -192,6 +195,7 @@ export default class GithubStorage {
     if (resp.status === 404) {
       if (this.autoCreate) {
         await this._create();
+        return { store: this.store, json: this.json };
       } else {
         throw new Error(`Cannot open database "${this.key}"`);
       }

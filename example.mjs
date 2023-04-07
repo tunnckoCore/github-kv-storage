@@ -27,5 +27,5 @@ await store.set("bar.zaz", 123);
 // similar to set(key, undefined)
 await store.delete("bar.zazzy");
 
-await store.delete("foo");
-await store.delete("bar");
+// await store.delete("foo");
+// await store.delete("bar");
