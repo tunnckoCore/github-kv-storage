@@ -2,8 +2,7 @@
   "foo": "bar",
   "bar": {
     "qux": {
-      "zazzy": 123,
-      "barry": 456
+      "zazzy": 123
     }
   }
 }
