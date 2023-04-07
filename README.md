@@ -1,4 +1,4 @@
-# github-storage
+# github-kv-storage
 
 > StorageArea implementation for GitHub, using the REST v4 API. Because everything else sucks and I need a basic, centralized, and reliable database
 
@@ -76,7 +76,7 @@ For example, in the `github://tunnckoCore/foobar/mydb.js` the `mydb` is the name
 ### Example
 
 ```js
-import GithubStorage from "kv-github-storage";
+import GithubStorage from "github-kv-storage";
 
 const store = new GithubStorage({
   token: "<your github access token>",

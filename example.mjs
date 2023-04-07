@@ -7,8 +7,6 @@ const store = new GithubStorage({
   autoCreate: true,
 });
 
-// await store.delete("foo");
-// await store.delete("bar");
 await store.set("foo", "bar");
 
 // all places where `key` is accepted support dot notation
@@ -28,3 +26,6 @@ await store.set("bar.zaz", 123);
 
 // similar to set(key, undefined)
 await store.delete("bar.zazzy");
+
+await store.delete("foo");
+await store.delete("bar");
