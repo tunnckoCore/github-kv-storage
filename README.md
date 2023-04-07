@@ -15,7 +15,7 @@ It **DOES NOT** do that for the other methods like `get`, `keys`, `values`.
 yarn add github-kv-storage
 ```
 
-Implements the following
+Implements the following, including the `localStorage`/`sessionStorage`-like methods - `getItem`, `setItem`, `removeItem`, `deleteItem`. They are just aliases of the StorageArea methods.
 
 ```ts
 export type AllowedKey = string | number | Date | BufferSource | AllowedKey[];
@@ -81,6 +81,8 @@ import GithubStorage from "kv-github-storage";
 const store = new GithubStorage({
   token: "<your github access token>",
   url: "github://<username>/<repo>/<dbname>",
+  pretty: true,
+  autoCreate: true,
 });
 
 await store.set("foo", "bar");
@@ -91,4 +93,18 @@ await store.set("bar.qux", { zazzy: 123, barry: 456 });
 // setting value to `undefined`
 // works like the `store.remove('bar.qux.barry')`
 await store.set("bar.qux.barry", undefined);
+
+// no arguments, returns the whole store
+await store.get();
+
+// all methods support dot notation
+await store.get("bar.qux");
+
+await store.set("bar.zaz", 123);
+
+// similar to set(key, undefined)
+await store.delete("bar.zazzy");
+
+await store.delete("foo");
+await store.delete("bar");
 ```

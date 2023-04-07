@@ -9,13 +9,13 @@ import getValue from "get-value";
 //   return decodeURIComponent(escape(atob(val)));
 // }
 
-class GithubStorage {
+export default class GithubStorage {
   constructor(name, options) {
     if (name && typeof name !== "string") {
       options = name;
       name = options.name || options?.url.split("/").pop() || "db";
     }
-    let { token, url, repo, owner, pretty } = options || {};
+    let { token, url, repo, owner, pretty, autoCreate } = options || {};
 
     if (!token) {
       throw new Error("Missing GitHub token");
@@ -37,6 +37,7 @@ class GithubStorage {
     this.name = this.name.replace(/\.json$/, "");
     this.key = `${this.name}.json`;
 
+    this.autoCreate = autoCreate;
     this.pretty = pretty;
     this.token = token;
 
@@ -101,6 +102,10 @@ class GithubStorage {
     return { key, data, content };
   }
 
+  async remove(...args) {
+    return this.delete(...args);
+  }
+
   async clear() {
     const response = await fetch(this.url, {
       method: "DELETE",
@@ -154,7 +159,7 @@ class GithubStorage {
   }
 
   async _create() {
-    await fetch(this.url, {
+    const resp = await fetch(this.url, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${this.token}`,
@@ -171,17 +176,6 @@ class GithubStorage {
     return { store: this.store, json: this.json };
   }
 
-  async _getContentSha() {
-    const response = await fetch(this.url, {
-      headers: {
-        Authorization: `Bearer ${this.token}`,
-      },
-    });
-
-    const data = await response.json();
-    return data.sha;
-  }
-
   async _open() {
     let resp = null;
 
@@ -196,7 +190,11 @@ class GithubStorage {
     }
 
     if (resp.status === 404) {
-      throw new Error(`Cannot open database "${this.key}"`);
+      if (this.autoCreate) {
+        await this._create();
+      } else {
+        throw new Error(`Cannot open database "${this.key}"`);
+      }
     }
 
     this.store = await resp.json();
@@ -216,62 +214,37 @@ class GithubStorage {
       ? JSON.stringify(content, null, 2)
       : JSON.stringify(content);
   }
-}
 
-const storage = new GithubStorage({
-  token: "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",
-  url: "github://tunnckoCore/0xneko-ordinals/deno.json",
-  pretty: true,
-});
+  async _getContentSha() {
+    const response = await fetch(this.url, {
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+      },
+    });
 
-// Usage:
-// await storage.delete("works");
-// console.log(`update works field`);
-
-// await storage.set("compilerOptions.jsxImportSource", "preact");
-// console.log("updated value of key compilerOptions.jsxImportSource");
-
-// await storage.set("compilerOptions.jsx", "react-jsx");
-// console.log("updated value of key compilerOptions.jsx");
-
-// "jsxImportSource":"preact"
-
-// await storage.delete("works");
-// console.log("removed value of key: my-key");
-
-const entries = await storage.entries();
-
-for await (const [key, value] of entries) {
-  console.log(key);
-}
-
-// const res = await storage.get();
-// console.log(`Get the store`, res);
-
-// storage.getItem("my-key").then((value) => {
-//   console.log(`Value for key "my-key": ${value}`);
-// });
-
-// storage.removeItem("my-key").then((sha) => {
-//   console.log(`Successfully removed value with SHA ${sha}`);
-// });
-
-// storage.setItem("foobar", { hoho: "quxie" }).then((sha) => {
-//   console.log(`Successfully saved "foobar" with value, with SHA ${sha}`);
-// });
-
-// storage.getItem("foobar").then((value) => {
-//   console.log(`Value for key "foobar": ${value}`);
-// });
-
-// storage.removeItem("compilerOptions").then((sha) => {
-//   console.log(`Successfully removed value with SHA ${sha}`);
-// });
-
-/*
-"compilerOptions": {
-    "jsx": "react-jsx",
-    "jsxImportSource": "preact"
+    const data = await response.json();
+    return data.sha;
   }
 
-*/
+  /**
+   * localStorage/sessionStorage-like methods
+   */
+
+  async getItem(key) {
+    return this.get(key);
+  }
+
+  async setItem(key, value) {
+    return this.set(key, value);
+  }
+
+  async removeItem(key) {
+    return this.delete(key);
+  }
+  async deleteItem(key) {
+    return this.delete(key);
+  }
+}
+
+export { GithubStorage };
+export const GitHubStorage = GithubStorage;
