@@ -61,7 +61,7 @@ database in few ways:
 - through `options.name`
 - as last part of the url
 - if not found anywhere, it defaults to `db` which means a file named `db.json` should exist
-  in the repository, or call `await storage._create()` to initialize it.
+  in the repository, or pass `options.autoCreate: true`, or call `await storage._create()` to initialize it.
 
 For example, in the `github://tunnckoCore/foobar/mydb.js` the `mydb` is the name.
 
@@ -72,6 +72,7 @@ For example, in the `github://tunnckoCore/foobar/mydb.js` the `mydb` is the name
 - `repo` **{string}** - Github repository
 - `owner` **{string}** - Github username; not needed `url` passed
 - `pretty` **{boolean}** - disabled by default; the written to be indented with 2 spaces
+- `autoCreate` **{boolean}** - default `false`; to create an initial empty database
 
 ### Example
 
